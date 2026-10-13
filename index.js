@@ -9,13 +9,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Express Middleware for Vercel Serverless
+// Middleware: Har request aane par DB connection wait karega
 app.use(async (req, res, next) => {
   try {
     await connectToMongo();
     next();
-  } catch (err) {
-    res.status(500).json({ message: "Database connection failed", error: err.message });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Database connection error",
+      error: error.message,
+    });
   }
 });
 
@@ -26,7 +29,6 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
 
 
 
