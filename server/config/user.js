@@ -1,20 +1,13 @@
+// config/user.js me mongoose.connect ke sath ensure karein:
 import mongoose from "mongoose";
 
-let isConnected = false;
-
 const connectToMongo = async () => {
-  if (isConnected) {
-    return;
-  }
-
-  const mongoURI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/myDatabase";
-
   try {
-    const db = await mongoose.connect(mongoURI);
-    isConnected = db.connections[0].readyState;
+    if (mongoose.connection.readyState >= 1) return;
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("MongoDB Connected Successfully");
-  } catch (err) {
-    console.error("Connection Error:", err);
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error);
   }
 };
 
